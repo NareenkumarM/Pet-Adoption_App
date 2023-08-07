@@ -1,8 +1,15 @@
+FROM golang:alpine as builder
 
-FROM adoptopenjdk:11-jre-hotspot
+COPY . /code
+WORKDIR /code
 
-WORKDIR /app
+# Run unit tests
+RUN go test
 
-COPY /home/123nareen2001gm/Downloads/petadoption-master/ /app/
+# Build app
+RUN go build -o sample-app
 
-ENTRYPOINT ["java", "Main"]
+FROM alpine
+
+COPY --from=builder /code/sample-app /sample-app
+CMD /sample-app
